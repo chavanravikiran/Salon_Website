@@ -1,0 +1,26 @@
+<div class="carousel" *ngIf="testimonials.length" appReveal (mouseenter)="stopAutoAdvance()" (mouseleave)="startAutoAdvance()">
+  <button type="button" class="carousel-arrow prev" (click)="onManualNav('prev')" aria-label="Previous review">&#8249;</button>
+
+  <div class="carousel-track" [style.transform]="'translateX(-' + (activeIndex * 100) + '%)'">
+    <div class="carousel-slide" *ngFor="let t of testimonials">
+      <div class="card card-body">
+        <div class="stars">{{ stars(t.rating) }}</div>
+        <p>&ldquo;{{ t.reviewText }}&rdquo;</p>
+        <p><strong>&mdash; {{ t.customerName }}</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="carousel-arrow next" (click)="onManualNav('next')" aria-label="Next review">&#8250;</button>
+
+  <div class="carousel-dots" *ngIf="testimonials.length > 1">
+    <button
+      type="button"
+      class="carousel-dot"
+      *ngFor="let t of testimonials; let i = index"
+      [class.active]="i === activeIndex"
+      (click)="goTo(i)"
+      [attr.aria-label]="'Go to review ' + (i + 1)">
+    </button>
+  </div>
+</div>

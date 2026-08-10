@@ -1,0 +1,18 @@
+<section class="section container">
+  <h2 class="section-title" data-eyebrow="The Experts">Meet Our Stylists</h2>
+  <p class="section-subtitle">Skilled professionals dedicated to your look</p>
+
+  <div class="card-grid" *ngIf="staff.length; else empty">
+    <div class="card" *ngFor="let member of staff; let i = index" appReveal [appRevealDelay]="(i % 3) * 100">
+      <img [src]="member.photoUrl ? (member.photoUrl | imageUrl) : 'https://placehold.co/400x300?text=Stylist'" [alt]="member.name" />
+      <div class="card-body">
+        <h3>{{ member.name }}</h3>
+        <p *ngIf="member.specialty"><strong>{{ member.specialty }}</strong></p>
+        <p>{{ member.bio }}</p>
+      </div>
+    </div>
+  </div>
+  <ng-template #empty>
+    <p class="section-subtitle">Our team profiles will be added soon.</p>
+  </ng-template>
+</section>

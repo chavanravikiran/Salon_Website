@@ -1,0 +1,40 @@
+<div class="filter-bar">
+  <button type="button" class="btn-outline" (click)="toggle()">
+    Filter<span *ngIf="activeCount">&nbsp;({{ activeCount }})</span>
+  </button>
+
+  <div class="admin-panel filter-panel" *ngIf="open">
+    <form [formGroup]="form" (ngSubmit)="apply()">
+      <div class="form-grid">
+        <ng-container *ngFor="let field of fields">
+          <mat-form-field appearance="outline" class="form-field" *ngIf="field.type === 'text' || field.type === 'number'">
+            <mat-label>{{ field.label }}</mat-label>
+            <input matInput [type]="field.type" [formControlName]="field.key" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field" *ngIf="field.type === 'date'">
+            <mat-label>{{ field.label }}</mat-label>
+            <input matInput type="date" [formControlName]="field.key" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field" *ngIf="field.type === 'select' || field.type === 'boolean'">
+            <mat-label>{{ field.label }}</mat-label>
+            <mat-select [formControlName]="field.key">
+              <mat-option [value]="null">Any</mat-option>
+              <ng-container *ngIf="field.type === 'boolean'">
+                <mat-option [value]="true">Yes</mat-option>
+                <mat-option [value]="false">No</mat-option>
+              </ng-container>
+              <mat-option *ngFor="let opt of field.options" [value]="opt.value">{{ opt.label }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-container>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">Apply</button>
+        <button type="button" class="btn-outline" (click)="clear()">Clear</button>
+      </div>
+    </form>
+  </div>
+</div>

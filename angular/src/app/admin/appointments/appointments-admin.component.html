@@ -1,0 +1,47 @@
+<div class="admin-header">
+  <h2 class="section-title" style="margin:0;text-align:left;">Appointments</h2>
+  <app-filter-bar [fields]="filterFields" (filterChange)="onFilterChange($event)"></app-filter-bar>
+</div>
+
+<table class="admin-table">
+  <thead>
+    <tr>
+      <th>Customer</th>
+      <th>Contact</th>
+      <th>Service</th>
+      <th>Stylist</th>
+      <th>Date &amp; Time</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let a of appointments">
+      <td>{{ a.customerName }}</td>
+      <td>{{ a.customerEmail }}<br />{{ a.customerPhone }}</td>
+      <td>{{ a.serviceName }}</td>
+      <td>{{ a.staffName || 'No preference' }}</td>
+      <td>{{ a.appointmentDate }} {{ a.appointmentTime }}</td>
+      <td>
+        <span class="badge" [ngClass]="badgeClass(a.status)">{{ a.status }}</span>
+      </td>
+      <td>
+        <select (change)="updateStatus(a, $any($event.target).value)">
+          <option value="" disabled selected>Set status</option>
+          <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+        </select>
+        <button class="action-link danger" (click)="remove(a)">Delete</button>
+      </td>
+    </tr>
+    <tr *ngIf="!appointments.length">
+      <td colspan="7">No appointments match the current filters.</td>
+    </tr>
+  </tbody>
+</table>
+<mat-paginator
+  [length]="totalElements"
+  [pageIndex]="pageIndex"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  (page)="onPage($event)">
+</mat-paginator>

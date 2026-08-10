@@ -1,0 +1,17 @@
+<div class="admin-login-wrap">
+  <div class="admin-panel admin-login-card">
+    <h2 class="section-title" style="margin-bottom:24px;">Admin Login</h2>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" />
+      </mat-form-field>
+      <p *ngIf="errorMessage" style="color:#b3261e;">{{ errorMessage }}</p>
+      <button type="submit" class="btn-primary full-width" [disabled]="submitting">Log In</button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,83 @@
+<div class="admin-header">
+  <h2 class="section-title" style="margin:0;text-align:left;">Staff</h2>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <app-filter-bar [fields]="filterFields" (filterChange)="onFilterChange($event)"></app-filter-bar>
+    <button class="btn-primary" (click)="newMember()" *ngIf="!showForm">+ Add Staff Member</button>
+  </div>
+</div>
+
+<div class="admin-panel" *ngIf="showForm">
+  <h3>{{ editingId ? 'Edit Staff Member' : 'New Staff Member' }}</h3>
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="form-grid">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Specialty</mat-label>
+        <input matInput formControlName="specialty" />
+      </mat-form-field>
+    </div>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Bio</mat-label>
+      <textarea matInput rows="3" formControlName="bio"></textarea>
+    </mat-form-field>
+
+    <div style="margin-bottom:16px;">
+      <label>Photo: </label>
+      <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+      <span *ngIf="uploading"> Uploading&hellip;</span>
+      <div *ngIf="form.value.photoUrl" style="margin-top:8px;">
+        <img [src]="resolveImage(form.value.photoUrl)" style="height:80px;border-radius:4px;" />
+      </div>
+    </div>
+
+    <label>
+      <input type="checkbox" formControlName="active" /> Active (visible on public site)
+    </label>
+
+    <p *ngIf="errorMessage" style="color:#b3261e;">{{ errorMessage }}</p>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">Save</button>
+      <button type="button" class="btn-outline" (click)="cancel()">Cancel</button>
+    </div>
+  </form>
+</div>
+
+<table class="admin-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Specialty</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let member of staff">
+      <td>{{ member.name }}</td>
+      <td>{{ member.specialty }}</td>
+      <td>
+        <span class="badge" [ngClass]="member.active ? 'badge-confirmed' : 'badge-cancelled'">
+          {{ member.active ? 'Active' : 'Inactive' }}
+        </span>
+      </td>
+      <td>
+        <button class="action-link" (click)="edit(member)">Edit</button>
+        <button class="action-link danger" (click)="remove(member)">Delete</button>
+      </td>
+    </tr>
+    <tr *ngIf="!staff.length">
+      <td colspan="4">No staff members match the current filters.</td>
+    </tr>
+  </tbody>
+</table>
+<mat-paginator
+  [length]="totalElements"
+  [pageIndex]="pageIndex"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  (page)="onPage($event)">
+</mat-paginator>

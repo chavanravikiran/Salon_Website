@@ -1,0 +1,18 @@
+<header class="site-header">
+  <div class="container header-inner">
+    <a routerLink="/" class="brand" *ngIf="settings$ | async as settings">
+      <img *ngIf="settings.logoImage" [src]="settings.logoImage | imageUrl" [alt]="settings.websiteName" class="brand-logo" />
+      <ng-container>{{ settings.websiteName }}</ng-container>
+    </a>
+    <button class="menu-toggle" (click)="toggleMenu()" aria-label="Toggle navigation">&#9776;</button>
+    <nav class="nav-links" [class.open]="menuOpen">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">Home</a>
+      <a routerLink="/services" routerLinkActive="active" (click)="closeMenu()">Services</a>
+      <a routerLink="/staff" routerLinkActive="active" (click)="closeMenu()">Stylists</a>
+      <a routerLink="/gallery" routerLinkActive="active" (click)="closeMenu()">Gallery</a>
+      <a routerLink="/testimonials" routerLinkActive="active" (click)="closeMenu()">Reviews</a>
+      <a routerLink="/contact" routerLinkActive="active" (click)="closeMenu()">Contact</a>
+      <a routerLink="/booking" class="btn-primary book-btn" (click)="closeMenu()">Book Now</a>
+    </nav>
+  </div>
+</header>

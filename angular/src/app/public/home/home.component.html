@@ -1,0 +1,67 @@
+<section class="hero" *ngIf="settings$ | async as settings">
+  <ng-container *ngIf="settings.heroMediaUrl">
+    <video
+      *ngIf="settings.heroMediaType === 'VIDEO'"
+      class="hero-media"
+      [src]="settings.heroMediaUrl | imageUrl"
+      autoplay muted loop playsinline>
+    </video>
+    <img
+      *ngIf="settings.heroMediaType === 'IMAGE'"
+      class="hero-media"
+      [src]="settings.heroMediaUrl | imageUrl"
+      alt="" />
+    <div class="hero-overlay"></div>
+  </ng-container>
+
+  <div class="container">
+    <span class="script-kicker">Welcome to</span>
+    <h1>More Than a Salon. A Radiant Escape.</h1>
+    <p>Thoughtfully curated rituals, expert hands, and a space designed to help you slow down, reset and glow &mdash; inside and out.</p>
+    <div class="hero-actions">
+      <a routerLink="/booking" class="btn-primary">Book an Appointment</a>
+      <a routerLink="/services" class="btn-outline btn-outline--on-dark">View Services</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="stat-number">500+</span>
+        <span class="stat-label">Happy Clients</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-number">10+</span>
+        <span class="stat-label">Expert Stylists</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-number">15</span>
+        <span class="stat-label">Years of Excellence</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section container">
+  <h2 class="section-title" data-eyebrow="Curated For You">Popular Services</h2>
+  <p class="section-subtitle">A few of our guests' favorites</p>
+  <div class="card-grid" *ngIf="featuredServices.length; else noServices">
+    <div class="card" *ngFor="let service of featuredServices; let i = index" appReveal [appRevealDelay]="i * 100">
+      <img [src]="service.imageUrl ? (service.imageUrl | imageUrl) : 'https://placehold.co/400x300?text=Service'" [alt]="service.name" />
+      <div class="card-body">
+        <h3>{{ service.name }}</h3>
+        <p>{{ service.description }}</p>
+        <p><strong>₹{{ service.price }}</strong> &middot; {{ service.durationMinutes }} min</p>
+      </div>
+    </div>
+  </div>
+  <ng-template #noServices>
+    <p class="section-subtitle">Services will appear here once added by the admin.</p>
+  </ng-template>
+  <div style="text-align:center; margin-top: 32px;">
+    <a routerLink="/services" class="btn-outline">See All Services</a>
+  </div>
+</section>
+
+<section class="section section-alt container" *ngIf="testimonials.length">
+  <h2 class="section-title" data-eyebrow="Client Love">What Our Clients Say</h2>
+  <p class="section-subtitle">Real feedback from real guests</p>
+  <app-testimonial-carousel [testimonials]="testimonials"></app-testimonial-carousel>
+</section>

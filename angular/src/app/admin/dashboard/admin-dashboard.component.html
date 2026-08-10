@@ -1,0 +1,31 @@
+<div class="admin-header">
+  <h2 class="section-title" style="margin:0;text-align:left;">Dashboard</h2>
+</div>
+
+<div class="card-grid">
+  <div class="card card-body">
+    <h3>{{ serviceCount }}</h3>
+    <p>Services</p>
+    <a routerLink="/admin/services" class="action-link">Manage &rarr;</a>
+  </div>
+  <div class="card card-body">
+    <h3>{{ staffCount }}</h3>
+    <p>Staff Members</p>
+    <a routerLink="/admin/staff" class="action-link">Manage &rarr;</a>
+  </div>
+  <div class="card card-body">
+    <h3>{{ galleryCount }}</h3>
+    <p>Gallery Images</p>
+    <a routerLink="/admin/gallery" class="action-link">Manage &rarr;</a>
+  </div>
+  <div class="card card-body">
+    <h3>{{ pendingAppointments }}</h3>
+    <p>Pending Appointments</p>
+    <a routerLink="/admin/appointments" class="action-link">Review &rarr;</a>
+  </div>
+  <div class="card card-body">
+    <h3>{{ pendingTestimonials }}</h3>
+    <p>Testimonials Awaiting Approval</p>
+    <a routerLink="/admin/testimonials" class="action-link">Review &rarr;</a>
+  </div>
+</div>

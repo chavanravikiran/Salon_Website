@@ -1,0 +1,20 @@
+<section class="section container">
+  <h2 class="section-title" data-eyebrow="Our Menu">Our Services</h2>
+  <p class="section-subtitle">Professional treatments tailored to you</p>
+
+  <div class="card-grid" *ngIf="services.length; else empty">
+    <div class="card" *ngFor="let service of services; let i = index" appReveal [appRevealDelay]="(i % 3) * 100">
+      <img [src]="service.imageUrl ? (service.imageUrl | imageUrl) : 'https://placehold.co/400x300?text=Service'" [alt]="service.name" />
+      <div class="card-body">
+        <h3>{{ service.name }}</h3>
+        <p>{{ service.description }}</p>
+        <p *ngIf="service.category" class="section-subtitle" style="margin:0 0 8px;text-align:left;">{{ service.category }}</p>
+        <p><strong>₹{{ service.price }}</strong> &middot; {{ service.durationMinutes }} min</p>
+        <a routerLink="/booking" [queryParams]="{ serviceId: service.id }" class="btn-primary">Book This</a>
+      </div>
+    </div>
+  </div>
+  <ng-template #empty>
+    <p class="section-subtitle">No services available yet. Please check back soon.</p>
+  </ng-template>
+</section>

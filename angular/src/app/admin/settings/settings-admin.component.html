@@ -1,0 +1,107 @@
+<div class="admin-header">
+  <h2 class="section-title" style="margin:0;text-align:left;">Website Settings</h2>
+</div>
+
+<p *ngIf="errorMessage" style="color:#b3261e;">{{ errorMessage }}</p>
+<p *ngIf="successMessage" style="color:#1f7a3d;">{{ successMessage }}</p>
+
+<div class="admin-panel">
+  <h3>Logo</h3>
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px;">
+    <img *ngIf="settings?.logoImage" [src]="resolveImage(settings?.logoImage)" style="height:64px;border-radius:4px;" />
+    <span *ngIf="!settings?.logoImage" class="section-subtitle" style="margin:0;">No logo uploaded yet.</span>
+  </div>
+  <input type="file" accept="image/*" (change)="onLogoSelected($event)" />
+  <span *ngIf="uploadingLogo"> Uploading&hellip;</span>
+  <button type="button" class="action-link danger" *ngIf="settings?.logoImage" (click)="deleteLogo()">Delete Logo</button>
+</div>
+
+<div class="admin-panel">
+  <h3>Favicon</h3>
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px;">
+    <img *ngIf="settings?.faviconImage" [src]="resolveImage(settings?.faviconImage)" style="height:32px;border-radius:4px;" />
+    <span *ngIf="!settings?.faviconImage" class="section-subtitle" style="margin:0;">No favicon uploaded yet.</span>
+  </div>
+  <input type="file" accept="image/*,.ico" (change)="onFaviconSelected($event)" />
+  <span *ngIf="uploadingFavicon"> Uploading&hellip;</span>
+  <button type="button" class="action-link danger" *ngIf="settings?.faviconImage" (click)="deleteFavicon()">Delete Favicon</button>
+</div>
+
+<div class="admin-panel">
+  <h3>Home Page Background</h3>
+  <p class="section-subtitle" style="margin:0 0 12px;text-align:left;">Shown behind the hero section on the home page. Upload an image or a short video (mp4/webm) to replace it.</p>
+  <div style="margin-bottom:8px;" *ngIf="settings?.heroMediaUrl">
+    <video *ngIf="settings?.heroMediaType === 'VIDEO'" [src]="resolveImage(settings?.heroMediaUrl)" style="max-height:160px;border-radius:4px;" muted autoplay loop></video>
+    <img *ngIf="settings?.heroMediaType === 'IMAGE'" [src]="resolveImage(settings?.heroMediaUrl)" style="max-height:160px;border-radius:4px;" />
+  </div>
+  <span *ngIf="!settings?.heroMediaUrl" class="section-subtitle" style="margin:0 0 8px;text-align:left;display:block;">No background image or video uploaded yet.</span>
+  <input type="file" accept="image/*,video/mp4,video/webm,video/ogg" (change)="onHeroMediaSelected($event)" />
+  <span *ngIf="uploadingHeroMedia"> Uploading&hellip;</span>
+  <button type="button" class="action-link danger" *ngIf="settings?.heroMediaUrl" (click)="deleteHeroMedia()">Delete Background</button>
+</div>
+
+<div class="admin-panel">
+  <h3>General Info</h3>
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="form-grid">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Website Name</mat-label>
+        <input matInput formControlName="websiteName" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Phone</mat-label>
+        <input matInput formControlName="phone" />
+      </mat-form-field>
+    </div>
+    <div class="form-grid">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Appointment / Business Hours</mat-label>
+        <input matInput formControlName="businessHours" placeholder="Mon - Sat: 9:00 AM - 7:00 PM, Sunday: Closed" />
+      </mat-form-field>
+    </div>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Address</mat-label>
+      <input matInput formControlName="address" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput rows="3" formControlName="description"></textarea>
+    </mat-form-field>
+
+    <h3>Social Media Links</h3>
+    <div class="form-grid">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Facebook URL</mat-label>
+        <input matInput formControlName="facebookUrl" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Instagram URL</mat-label>
+        <input matInput formControlName="instagramUrl" />
+      </mat-form-field>
+    </div>
+    <div class="form-grid">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Twitter / X URL</mat-label>
+        <input matInput formControlName="twitterUrl" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>YouTube URL</mat-label>
+        <input matInput formControlName="youtubeUrl" />
+      </mat-form-field>
+    </div>
+
+    <h3>Google Map</h3>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Google Maps Embed URL</mat-label>
+      <input matInput formControlName="googleMapEmbedUrl" placeholder="https://www.google.com/maps/embed?pb=..." />
+    </mat-form-field>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">Save Settings</button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,46 @@
+<section class="section container">
+  <h2 class="section-title" data-eyebrow="Client Love">Client Reviews</h2>
+  <p class="section-subtitle">Hear from our happy guests</p>
+
+  <app-testimonial-carousel *ngIf="testimonials.length; else empty" [testimonials]="testimonials"></app-testimonial-carousel>
+  <ng-template #empty>
+    <p class="section-subtitle">Be the first to leave a review!</p>
+  </ng-template>
+</section>
+
+<section class="section container" style="max-width:600px;">
+  <h2 class="section-title" data-eyebrow="Your Voice">Share Your Experience</h2>
+  <div class="admin-panel" *ngIf="!submitted; else thanks">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Your Name</mat-label>
+        <input matInput formControlName="customerName" />
+      </mat-form-field>
+
+      <label style="display:block;font-weight:600;margin-bottom:8px;">How was your experience?</label>
+      <div class="emoji-rating">
+        <button
+          type="button"
+          class="emoji-rating-btn"
+          *ngFor="let opt of ratingOptions"
+          [class.active]="form.value.rating === opt.value"
+          (click)="setRating(opt.value)">
+          {{ opt.emoji }}
+          <span>{{ opt.label }}</span>
+        </button>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Your Review</mat-label>
+        <textarea matInput rows="4" formControlName="reviewText"></textarea>
+      </mat-form-field>
+      <p *ngIf="errorMessage" style="color:#b3261e;">{{ errorMessage }}</p>
+      <button type="submit" class="btn-primary" [disabled]="submitting">Submit Review</button>
+    </form>
+  </div>
+  <ng-template #thanks>
+    <div class="admin-panel">
+      <p>Thank you! Your review has been submitted and will appear once approved by our team.</p>
+    </div>
+  </ng-template>
+</section>

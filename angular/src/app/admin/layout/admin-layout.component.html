@@ -1,0 +1,16 @@
+<div class="admin-shell">
+  <aside class="admin-sidebar">
+    <span class="brand">{{ (settings$ | async)?.websiteName }} Admin</span>
+    <a routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a>
+    <a routerLink="/admin/services" routerLinkActive="active">Services</a>
+    <a routerLink="/admin/staff" routerLinkActive="active">Staff</a>
+    <a routerLink="/admin/gallery" routerLinkActive="active">Gallery</a>
+    <a routerLink="/admin/testimonials" routerLinkActive="active">Testimonials</a>
+    <a routerLink="/admin/appointments" routerLinkActive="active">Appointments</a>
+    <a routerLink="/admin/settings" routerLinkActive="active">Settings</a>
+    <button class="logout-btn" (click)="logout()">Log Out ({{ username }})</button>
+  </aside>
+  <div class="admin-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

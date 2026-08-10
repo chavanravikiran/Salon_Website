@@ -1,0 +1,42 @@
+<div class="admin-header">
+  <h2 class="section-title" style="margin:0;text-align:left;">Testimonials</h2>
+  <app-filter-bar [fields]="filterFields" (filterChange)="onFilterChange($event)"></app-filter-bar>
+</div>
+
+<table class="admin-table">
+  <thead>
+    <tr>
+      <th>Customer</th>
+      <th>Rating</th>
+      <th>Review</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let t of testimonials">
+      <td>{{ t.customerName }}</td>
+      <td class="stars">{{ stars(t.rating) }}</td>
+      <td>{{ t.reviewText }}</td>
+      <td>
+        <span class="badge" [ngClass]="t.approved ? 'badge-confirmed' : 'badge-pending'">
+          {{ t.approved ? 'Approved' : 'Pending' }}
+        </span>
+      </td>
+      <td>
+        <button class="action-link" (click)="toggleApproval(t)">{{ t.approved ? 'Unapprove' : 'Approve' }}</button>
+        <button class="action-link danger" (click)="remove(t)">Delete</button>
+      </td>
+    </tr>
+    <tr *ngIf="!testimonials.length">
+      <td colspan="5">No testimonials match the current filters.</td>
+    </tr>
+  </tbody>
+</table>
+<mat-paginator
+  [length]="totalElements"
+  [pageIndex]="pageIndex"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  (page)="onPage($event)">
+</mat-paginator>

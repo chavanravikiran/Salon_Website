@@ -1,0 +1,17 @@
+<section class="section container">
+  <h2 class="section-title" data-eyebrow="Our Space">Gallery</h2>
+  <p class="section-subtitle">A glimpse into our work and space</p>
+
+  <div class="card-grid" *ngIf="images.length; else empty">
+    <div class="card" *ngFor="let image of images; let i = index" appReveal [appRevealDelay]="(i % 3) * 100">
+      <img [src]="image.imageUrl | imageUrl" [alt]="image.title || 'Gallery image'" />
+      <div class="card-body" *ngIf="image.title">
+        <h3>{{ image.title }}</h3>
+        <p *ngIf="image.category" class="section-subtitle" style="margin:0;text-align:left;">{{ image.category }}</p>
+      </div>
+    </div>
+  </div>
+  <ng-template #empty>
+    <p class="section-subtitle">Photos will be added by our team soon.</p>
+  </ng-template>
+</section>

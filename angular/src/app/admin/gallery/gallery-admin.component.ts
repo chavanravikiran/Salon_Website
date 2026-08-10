@@ -1,0 +1,134 @@
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { PageEvent } from '@angular/material/paginator';
+import { GalleryImage } from 'src/app/core/models/gallery-image.model';
+import { GalleryApiService } from 'src/app/core/services/gallery-api.service';
+import { UploadService } from 'src/app/core/services/upload.service';
+import { FilterFieldConfig } from 'src/app/shared/components/filter-bar/filter-field.model';
+
+@Component({
+  selector: 'app-gallery-admin',
+  templateUrl: './gallery-admin.component.html'
+})
+export class GalleryAdminComponent implements OnInit {
+  images: GalleryImage[] = [];
+  form: FormGroup;
+  editingId: number | null = null;
+  showForm = false;
+  uploading = false;
+  errorMessage = '';
+
+  filters: Record<string, unknown> = {};
+  pageIndex = 0;
+  pageSize = 10;
+  totalElements = 0;
+
+  filterFields: FilterFieldConfig[] = [
+    { key: 'title', label: 'Title', type: 'text' },
+    { key: 'category', label: 'Category', type: 'text' },
+    { key: 'from', label: 'From', type: 'date' },
+    { key: 'to', label: 'To', type: 'date' }
+  ];
+
+  constructor(
+    private galleryApi: GalleryApiService,
+    private uploadService: UploadService,
+    private fb: FormBuilder
+  ) {
+    this.form = this.fb.group({
+      title: [''],
+      imageUrl: ['', Validators.required],
+      category: ['']
+    });
+  }
+
+  ngOnInit(): void {
+    this.load();
+  }
+
+  load(): void {
+    this.galleryApi
+      .search(this.filters, { page: this.pageIndex, size: this.pageSize, sortBy: 'uploadedAt', sortDir: 'desc' })
+      .subscribe(result => {
+        this.images = result.content;
+        this.totalElements = result.totalElements;
+      });
+  }
+
+  onFilterChange(filters: Record<string, unknown>): void {
+    this.filters = filters;
+    this.pageIndex = 0;
+    this.load();
+  }
+
+  onPage(event: PageEvent): void {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.load();
+  }
+
+  resolveImage(url: string | undefined): string {
+    return this.uploadService.resolveUrl(url) || 'https://placehold.co/80x80?text=No+Image';
+  }
+
+  newImage(): void {
+    this.editingId = null;
+    this.form.reset();
+    this.showForm = true;
+  }
+
+  edit(image: GalleryImage): void {
+    this.editingId = image.id ?? null;
+    this.form.reset(image);
+    this.showForm = true;
+  }
+
+  cancel(): void {
+    this.showForm = false;
+    this.errorMessage = '';
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) {
+      return;
+    }
+    this.uploading = true;
+    this.uploadService.upload(input.files[0]).subscribe({
+      next: res => {
+        this.form.patchValue({ imageUrl: res.url });
+        this.uploading = false;
+      },
+      error: () => {
+        this.errorMessage = 'Image upload failed.';
+        this.uploading = false;
+      }
+    });
+  }
+
+  save(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const payload = this.form.value;
+    const request = this.editingId
+      ? this.galleryApi.update(this.editingId, payload)
+      : this.galleryApi.create(payload);
+
+    request.subscribe({
+      next: () => {
+        this.showForm = false;
+        this.load();
+      },
+      error: () => (this.errorMessage = 'Could not save this image.')
+    });
+  }
+
+  remove(image: GalleryImage): void {
+    if (!image.id || !confirm('Delete this gallery image?')) {
+      return;
+    }
+    this.galleryApi.delete(image.id).subscribe(() => this.load());
+  }
+}

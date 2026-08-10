@@ -1,0 +1,71 @@
+<div class="admin-header">
+  <h2 class="section-title" style="margin:0;text-align:left;">Gallery</h2>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <app-filter-bar [fields]="filterFields" (filterChange)="onFilterChange($event)"></app-filter-bar>
+    <button class="btn-primary" (click)="newImage()" *ngIf="!showForm">+ Add Image</button>
+  </div>
+</div>
+
+<div class="admin-panel" *ngIf="showForm">
+  <h3>{{ editingId ? 'Edit Image' : 'New Image' }}</h3>
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="form-grid">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Category</mat-label>
+        <input matInput formControlName="category" />
+      </mat-form-field>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <label>Image: </label>
+      <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+      <span *ngIf="uploading"> Uploading&hellip;</span>
+      <div *ngIf="form.value.imageUrl" style="margin-top:8px;">
+        <img [src]="resolveImage(form.value.imageUrl)" style="height:80px;border-radius:4px;" />
+      </div>
+    </div>
+
+    <p *ngIf="errorMessage" style="color:#b3261e;">{{ errorMessage }}</p>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">Save</button>
+      <button type="button" class="btn-outline" (click)="cancel()">Cancel</button>
+    </div>
+  </form>
+</div>
+
+<table class="admin-table">
+  <thead>
+    <tr>
+      <th>Preview</th>
+      <th>Title</th>
+      <th>Category</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let image of images">
+      <td><img [src]="resolveImage(image.imageUrl)" style="height:48px;border-radius:4px;" /></td>
+      <td>{{ image.title }}</td>
+      <td>{{ image.category }}</td>
+      <td>
+        <button class="action-link" (click)="edit(image)">Edit</button>
+        <button class="action-link danger" (click)="remove(image)">Delete</button>
+      </td>
+    </tr>
+    <tr *ngIf="!images.length">
+      <td colspan="4">No gallery images match the current filters.</td>
+    </tr>
+  </tbody>
+</table>
+<mat-paginator
+  [length]="totalElements"
+  [pageIndex]="pageIndex"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  (page)="onPage($event)">
+</mat-paginator>
