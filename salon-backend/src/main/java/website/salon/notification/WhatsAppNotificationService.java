@@ -121,8 +121,8 @@ public class WhatsAppNotificationService {
 		this.restClient = RestClient.builder().baseUrl("https://graph.facebook.com/" + apiVersion).build();
 	}
 
-	public void sendAppointmentConfirmation(String toPhoneNumber, String customerName, String salonName,
-			String serviceName, String appointmentDate, String appointmentTime) {
+	public void sendAppointmentConfirmation(String toPhoneNumber, String customerName, String appointmentDateTime,
+			String serviceName, String confirmationNumber) {
 		if (!enabled) {
 			log.info("WhatsApp notifications are disabled");
 			return;
@@ -139,10 +139,9 @@ public class WhatsAppNotificationService {
 							new WhatsAppTemplateRequest.Language("en"),
 							List.of(new WhatsAppTemplateRequest.Component("body",
 									List.of(new WhatsAppTemplateRequest.Parameter("text", customerName),
-											new WhatsAppTemplateRequest.Parameter("text", salonName),
+											new WhatsAppTemplateRequest.Parameter("text", appointmentDateTime),
 											new WhatsAppTemplateRequest.Parameter("text", serviceName),
-											new WhatsAppTemplateRequest.Parameter("text", appointmentDate),
-											new WhatsAppTemplateRequest.Parameter("text", appointmentTime))))));
+											new WhatsAppTemplateRequest.Parameter("text", confirmationNumber))))));
 			restClient.post().uri("/{phoneNumberId}/messages", phoneNumberId)
 					.header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON)
 					.body(request).retrieve().toBodilessEntity();

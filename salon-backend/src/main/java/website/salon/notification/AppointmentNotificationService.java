@@ -99,11 +99,10 @@ public class AppointmentNotificationService {
 
         whatsAppNotificationService.sendAppointmentConfirmation(
                 appointment.customerPhone(),
-                appointment.customerName(),       // {{1}}
-                "Your Salon Name",                // {{2}}
-                appointment.serviceName(),         // {{3}}
-                formattedDate,                     // {{4}}
-                formattedTime                      // {{5}}
+                appointment.customerName(),                       // {{1}}
+                formattedDate + " at " + formattedTime,           // {{2}}
+                appointment.serviceName(),                         // {{3}}
+                String.valueOf(appointment.id())                  // {{4}}
         );
     }
 }
