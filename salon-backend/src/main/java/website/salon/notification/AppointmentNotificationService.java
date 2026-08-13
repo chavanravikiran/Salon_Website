@@ -105,4 +105,5 @@ public class AppointmentNotificationService {
                 String.valueOf(appointment.id())                  // {{4}}
         );
     }
+    
 }
