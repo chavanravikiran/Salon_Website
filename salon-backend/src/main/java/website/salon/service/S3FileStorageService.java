@@ -18,17 +18,11 @@ public class S3FileStorageService implements FileStorageService {
 
     private final S3Client s3Client;
     private final String bucket;
-    private final String region;
-    private final String publicBaseUrl;
 
     public S3FileStorageService(S3Client s3Client,
-                                 @Value("${app.aws.s3.bucket}") String bucket,
-                                 @Value("${app.aws.s3.region}") String region,
-                                 @Value("${app.aws.s3.public-base-url:}") String publicBaseUrl) {
+                                 @Value("${app.aws.s3.bucket}") String bucket) {
         this.s3Client = s3Client;
         this.bucket = bucket;
-        this.region = region;
-        this.publicBaseUrl = publicBaseUrl;
     }
 
     @Override
@@ -49,10 +43,7 @@ public class S3FileStorageService implements FileStorageService {
             throw new IllegalStateException("Failed to upload file to S3", e);
         }
 
-        if (!publicBaseUrl.isBlank()) {
-            return publicBaseUrl.replaceAll("/$", "") + "/" + key;
-        }
-        return "https://" + bucket + ".s3." + region + ".amazonaws.com/" + key;
+        return "/" + key;
     }
 
     @Override
