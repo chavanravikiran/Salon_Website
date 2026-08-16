@@ -45,6 +45,11 @@ public class GlobalExceptionHandler {
                 .body(body(HttpStatus.PAYLOAD_TOO_LARGE, "File is too large. Maximum allowed size is 10MB."));
     }
 
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<Object> handleFileStorage(FileStorageException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(body(HttpStatus.BAD_GATEWAY, ex.getMessage()));
+    }
+
     private Map<String, Object> body(HttpStatus status, String message) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", Instant.now().toString());

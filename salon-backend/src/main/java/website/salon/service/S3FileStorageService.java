@@ -5,10 +5,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.exception.SdkException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import website.salon.exception.FileStorageException;
 
 import java.io.IOException;
 
@@ -46,7 +48,9 @@ public class S3FileStorageService implements FileStorageService {
                     RequestBody.fromInputStream(file.getInputStream(), file.getSize())
             );
         } catch (IOException e) {
-            throw new IllegalStateException("Failed to upload file to S3", e);
+            throw new IllegalStateException("Failed to read uploaded file", e);
+        } catch (SdkException e) {
+            throw new FileStorageException("Could not upload file to storage: " + e.getMessage(), e);
         }
 
         return "/" + key;
@@ -62,7 +66,11 @@ public class S3FileStorageService implements FileStorageService {
             return;
         }
         String key = url.substring(uploadsIndex);
-        s3Client.deleteObject(DeleteObjectRequest.builder().bucket(bucket).key(key).build());
+        try {
+            s3Client.deleteObject(DeleteObjectRequest.builder().bucket(bucket).key(key).build());
+        } catch (SdkException e) {
+            throw new FileStorageException("Could not delete file from storage: " + e.getMessage(), e);
+        }
     }
 
     @Override
