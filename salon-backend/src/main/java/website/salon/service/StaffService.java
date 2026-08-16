@@ -23,9 +23,11 @@ public class StaffService {
     private static final Set<String> SORTABLE_FIELDS = Set.of("id", "name", "specialty");
 
     private final StaffRepository repository;
+    private final FileStorageService fileStorageService;
 
-    public StaffService(StaffRepository repository) {
+    public StaffService(StaffRepository repository, FileStorageService fileStorageService) {
         this.repository = repository;
+        this.fileStorageService = fileStorageService;
     }
 
     @Transactional(readOnly = true)
@@ -87,7 +89,7 @@ public class StaffService {
                 entity.getName(),
                 entity.getSpecialty(),
                 entity.getBio(),
-                entity.getPhotoUrl(),
+                fileStorageService.resolve(entity.getPhotoUrl()),
                 entity.getActive()
         );
     }

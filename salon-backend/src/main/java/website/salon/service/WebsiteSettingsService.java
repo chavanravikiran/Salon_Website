@@ -119,9 +119,9 @@ public class WebsiteSettingsService {
         return new WebsiteSettingsResponse(
                 entity.getId(),
                 entity.getWebsiteName(),
-                entity.getLogoImage(),
-                entity.getFaviconImage(),
-                entity.getHeroMediaUrl(),
+                fileStorageService.resolve(entity.getLogoImage()),
+                fileStorageService.resolve(entity.getFaviconImage()),
+                fileStorageService.resolve(entity.getHeroMediaUrl()),
                 entity.getHeroMediaType(),
                 entity.getPhone(),
                 entity.getEmail(),

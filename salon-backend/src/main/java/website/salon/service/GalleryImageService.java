@@ -23,9 +23,11 @@ public class GalleryImageService {
     private static final Set<String> SORTABLE_FIELDS = Set.of("id", "title", "category", "uploadedAt");
 
     private final GalleryImageRepository repository;
+    private final FileStorageService fileStorageService;
 
-    public GalleryImageService(GalleryImageRepository repository) {
+    public GalleryImageService(GalleryImageRepository repository, FileStorageService fileStorageService) {
         this.repository = repository;
+        this.fileStorageService = fileStorageService;
     }
 
     @Transactional(readOnly = true)
@@ -67,7 +69,7 @@ public class GalleryImageService {
         return new GalleryImageResponse(
                 entity.getId(),
                 entity.getTitle(),
-                entity.getImageUrl(),
+                fileStorageService.resolve(entity.getImageUrl()),
                 entity.getCategory(),
                 entity.getUploadedAt()
         );
