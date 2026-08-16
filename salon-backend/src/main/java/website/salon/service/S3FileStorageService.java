@@ -18,11 +18,17 @@ public class S3FileStorageService implements FileStorageService {
 
     private final S3Client s3Client;
     private final String bucket;
+    private final String region;
+    private final String publicBaseUrl;
 
     public S3FileStorageService(S3Client s3Client,
-                                 @Value("${app.aws.s3.bucket}") String bucket) {
+                                 @Value("${app.aws.s3.bucket}") String bucket,
+                                 @Value("${app.aws.s3.region}") String region,
+                                 @Value("${app.aws.s3.public-base-url:}") String publicBaseUrl) {
         this.s3Client = s3Client;
         this.bucket = bucket;
+        this.region = region;
+        this.publicBaseUrl = publicBaseUrl;
     }
 
     @Override
@@ -57,5 +63,20 @@ public class S3FileStorageService implements FileStorageService {
         }
         String key = url.substring(uploadsIndex);
         s3Client.deleteObject(DeleteObjectRequest.builder().bucket(bucket).key(key).build());
+    }
+
+    @Override
+    public String resolve(String storedPath) {
+        if (!StringUtils.hasText(storedPath) || storedPath.startsWith("http://") || storedPath.startsWith("https://")) {
+            return storedPath;
+        }
+        String path = storedPath.startsWith("/") ? storedPath.substring(1) : storedPath;
+        return baseUrl() + "/" + path;
+    }
+
+    private String baseUrl() {
+        return publicBaseUrl.isBlank()
+                ? "https://" + bucket + ".s3." + region + ".amazonaws.com"
+                : publicBaseUrl.replaceAll("/$", "");
     }
 }

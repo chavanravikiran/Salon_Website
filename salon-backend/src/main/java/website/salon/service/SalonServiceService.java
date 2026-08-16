@@ -23,9 +23,11 @@ public class SalonServiceService {
     private static final Set<String> SORTABLE_FIELDS = Set.of("id", "name", "price", "durationMinutes", "category");
 
     private final SalonServiceRepository repository;
+    private final FileStorageService fileStorageService;
 
-    public SalonServiceService(SalonServiceRepository repository) {
+    public SalonServiceService(SalonServiceRepository repository, FileStorageService fileStorageService) {
         this.repository = repository;
+        this.fileStorageService = fileStorageService;
     }
 
     @Transactional(readOnly = true)
@@ -91,7 +93,7 @@ public class SalonServiceService {
                 entity.getPrice(),
                 entity.getDurationMinutes(),
                 entity.getCategory(),
-                entity.getImageUrl(),
+                fileStorageService.resolve(entity.getImageUrl()),
                 entity.getActive()
         );
     }
